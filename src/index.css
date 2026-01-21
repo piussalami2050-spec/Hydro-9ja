@@ -1,0 +1,36 @@
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+```
+
+4. Click **"Commit new file"**
+
+---
+
+### **STEP 11: Create `src/App.jsx` (THE MAIN APP)**
+
+1. Click **"Add file"** → **"Create new file"**
+2. Name it: `src/App.jsx`
+3. **Go back to the artifact I created** (scroll up in our chat)
+4. Click the **copy button** in the top-right corner of the code artifact
+5. **Paste the ENTIRE code** into this file
+6. **IMPORTANT:** At the very end of the file, make sure it has:
+
+```javascript
+export default HydroNaija;
+```
