@@ -1,4 +1,3 @@
-```jsx
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -20,23 +19,25 @@ const HydroNaija = () => {
   });
   const [lastDrinkTime, setLastDrinkTime] = useState(Date.now());
 
-  // Load data from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('hydroNaijaData');
     if (saved) {
-      const data = JSON.parse(saved);
-      setTodayIntake(data.todayIntake || 0);
-      setDailyGoal(data.dailyGoal || 2500);
-      setEntries(data.entries || []);
-      setStreak(data.streak || 0);
-      setLongestStreak(data.longestStreak || 0);
-      setHistory(data.history || {});
-      setSettings(data.settings || settings);
-      setLastDrinkTime(data.lastDrinkTime || Date.now());
+      try {
+        const data = JSON.parse(saved);
+        setTodayIntake(data.todayIntake || 0);
+        setDailyGoal(data.dailyGoal || 2500);
+        setEntries(data.entries || []);
+        setStreak(data.streak || 0);
+        setLongestStreak(data.longestStreak || 0);
+        setHistory(data.history || {});
+        setSettings(data.settings || settings);
+        setLastDrinkTime(data.lastDrinkTime || Date.now());
+      } catch (e) {
+        console.error('Error loading data:', e);
+      }
     }
   }, []);
 
-  // Save data to localStorage
   useEffect(() => {
     const data = {
       todayIntake,
@@ -51,7 +52,6 @@ const HydroNaija = () => {
     localStorage.setItem('hydroNaijaData', JSON.stringify(data));
   }, [todayIntake, dailyGoal, entries, streak, longestStreak, history, settings, lastDrinkTime]);
 
-  // Check for midnight reset
   useEffect(() => {
     const checkMidnight = setInterval(() => {
       const today = new Date().toDateString();
@@ -60,9 +60,8 @@ const HydroNaija = () => {
         handleDayReset();
       }
     }, 60000);
-
     return () => clearInterval(checkMidnight);
-  }, [entries]);
+  }, [entries, todayIntake, dailyGoal, streak, longestStreak, history]);
 
   const handleDayReset = () => {
     const yesterday = new Date();
@@ -102,7 +101,7 @@ const HydroNaija = () => {
   const undoLast = () => {
     if (entries.length > 0) {
       const lastEntry = entries[0];
-      setTodayIntake(todayIntake - lastEntry.amount);
+      setTodayIntake(Math.max(0, todayIntake - lastEntry.amount));
       setEntries(entries.slice(1));
     }
   };
@@ -582,9 +581,7 @@ const HydroNaija = () => {
         </div>
         {settings.reminderEnabled && (
           <div className="text-sm text-gray-400">
-            Reminders: {settings.reminderHours.start}:00 - {settings.
-```jsx
-reminderHours.end}:00
+            Reminders: {settings.reminderHours.start}:00 - {settings.reminderHours.end}:00
           </div>
         )}
       </div>
@@ -625,7 +622,6 @@ reminderHours.end}:00
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
       <div className="max-w-md mx-auto">
-        {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <div>
@@ -634,65 +630,64 @@ reminderHours.end}:00
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
+              className="bg-white/20 hover:bg
 
-        {/* Main Content */}
-        <div className="p-4">
-          {activeTab === 'home' && <HomeTab />}
-          {activeTab === 'stats' && <StatsTab />}
-          {activeTab === 'tips' && <TipsTab />}
-          {activeTab === 'settings' && <SettingsTab />}
-        </div>
+-white/30 rounded-full p-2 transition-colors"
+>
+{darkMode ? '☀️' : '🌙'}
+</button>
+</div>
+</div>
+    <div className="p-4">
+      {activeTab === 'home' && <HomeTab />}
+      {activeTab === 'stats' && <StatsTab />}
+      {activeTab === 'tips' && <TipsTab />}
+      {activeTab === 'settings' && <SettingsTab />}
+    </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
-          <div className="max-w-md mx-auto grid grid-cols-4">
-            <button
-              onClick={() => setActiveTab('home')}
-              className={`p-4 text-center transition-colors ${
-                activeTab === 'home' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
-              }`}
-            >
-              <div className="text-2xl mb-1">🏠</div>
-              <div className="text-xs">Home</div>
-            </button>
-            <button
-              onClick={() => setActiveTab('stats')}
-              className={`p-4 text-center transition-colors ${
-                activeTab === 'stats' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
-              }`}
-            >
-              <div className="text-2xl mb-1">📊</div>
-              <div className="text-xs">Stats</div>
-            </button>
-            <button
-              onClick={() => setActiveTab('tips')}
-              className={`p-4 text-center transition-colors ${
-                activeTab === 'tips' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
-              }`}
-            >
-              <div className="text-2xl mb-1">💡</div>
-              <div className="text-xs">Tips</div>
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`p-4 text-center transition-colors ${
-                activeTab === 'settings' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
-              }`}
-            >
-              <div className="text-2xl mb-1">⚙️</div>
-              <div className="text-xs">Settings</div>
-            </button>
-          </div>
-        </div>
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
+      <div className="max-w-md mx-auto grid grid-cols-4">
+        <button
+          onClick={() => setActiveTab('home')}
+          className={`p-4 text-center transition-colors ${
+            activeTab === 'home' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
+          }`}
+        >
+          <div className="text-2xl mb-1">🏠</div>
+          <div className="text-xs">Home</div>
+        </button>
+        <button
+          onClick={() => setActiveTab('stats')}
+          className={`p-4 text-center transition-colors ${
+            activeTab === 'stats' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
+          }`}
+        >
+          <div className="text-2xl mb-1">📊</div>
+          <div className="text-xs">Stats</div>
+        </button>
+        <button
+          onClick={() => setActiveTab('tips')}
+          className={`p-4 text-center transition-colors ${
+            activeTab === 'tips' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
+          }`}
+        >
+          <div className="text-2xl mb-1">💡</div>
+          <div className="text-xs">Tips</div>
+        </button>
+        <button
+          onClick={() => setActiveTab('settings')}
+          className={`p-4 text-center transition-colors ${
+            activeTab === 'settings' ? 'text-blue-400 bg-gray-700' : 'text-gray-400'
+          }`}
+        >
+          <div className="text-2xl mb-1">⚙️</div>
+          <div className="text-xs">Settings</div>
+        </button>
       </div>
     </div>
-  );
+  </div>
+</div>
+);
 };
-
 export default HydroNaija;
+
